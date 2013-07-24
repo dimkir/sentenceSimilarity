@@ -4,6 +4,9 @@
 */
 class Similarity
 {
+   public final String SEPARATORS_WHITESPACE = "\t \n\r";
+   public final String SEPARATORS_PUNCTUATION = ".,?;:!\"'";
+   public final String SEPARATORS_WHITESPACE_PUNCTUATION = SEPARATORS_WHITESPACE + SEPARATORS_PUNCTUATION;
    private boolean mPrintWarningIfNullParameters = false;
    private boolean mDebugOutput = false;
   
@@ -41,8 +44,8 @@ class Similarity
       String[] tokens1;
       String[] tokens2;
       if ( separator == null){
-         tokens1 = splitTokens(s1, " ");
-         tokens2 = splitTokens(s2, " ");
+         tokens1 = splitTokens(s1);
+         tokens2 = splitTokens(s2);
       }
       else{
           tokens1 = splitTokens(s1, separator);
@@ -141,7 +144,7 @@ class Similarity
    * Compares two words and returns result.
    * @return 
    */
-   int compareWords(String w1, String w2){
+   private int compareWords(String w1, String w2){
       
       int v = w1.compareTo(w2);
       debugln("Comparing ["  +  w1 + "] \t vs \t [" + w2 + "] = " + v);
@@ -177,9 +180,14 @@ class Similarity
     situation we again count TWICE each of the words.
    */
    public float similarityRatio(String s1, String s2){
+      return similarityRatio(s1, s2, null); // calling with default separators.
+   }
+   
+   public float similarityRatio(String s1, String s2, String separators){
        SentenceExtInfo sentInfo = new SentenceExtInfo();
-       int wc = commonWordCount(s1, s2, null, sentInfo);
+       int wc = commonWordCount(s1, s2, separators, sentInfo);
        return (float) sentInfo.allSimilarWords / (float) sentInfo.totalAvailableWords;
+      
    }
  
   
